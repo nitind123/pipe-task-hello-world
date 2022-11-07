@@ -1,0 +1,19 @@
+name: hello-world
+description: My First Pipelines Task
+source: github.com/elioengcomp/jfrog-pipelines-task-hello-world
+labels:
+  - helloworld
+  - example
+  - node
+  - sdk
+input:
+  - name: name
+    description: Name to be greeted
+output:
+  - name: greeting
+    description: Greeting message produced by the task
+execution:
+  - node16 dist/index.js main
+hooks:
+  onStepComplete:
+    - node16 dist/index.js cleanup

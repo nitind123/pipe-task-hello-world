@@ -1,0 +1,96 @@
+template: true
+valuesFilePath: ./values.yml
+
+resources:
+  - name: hello_world_task_publish_gitrepo
+    type: GitRepo
+    configuration:
+      path: {{ .Values.repoPath }}
+      gitProvider: {{ .Values.gitIntegration }}
+      branches:
+        include: ^{{ .Values.mainBranch }}$
+      cloneProtocol: https
+      buildOn:
+        commit: false
+
+pipelines:
+  - name: hello_world_task_publish
+    configuration:
+      jfrogCliVersion: 2
+      runtime:
+        type: image
+        image:
+          auto:
+            language: node
+            versions:
+              - "16"
+      environmentVariables:
+        readOnly:
+          TASK_NAME: hello-world
+          TASK_VERSION: 0.0.0
+          TASK_REPOSITORY: pipelines-tasks-local
+          RESOLVE_REPO: npm-virtual
+    steps:
+      - name: build_and_publish_task
+        type: Bash
+        configuration:
+          inputResources:
+            - name: hello_world_task_publish_gitrepo
+          integrations:
+            - name: {{ .Values.artIntegration }}
+        execution:
+          onExecute:
+            # Make sure version was provided
+            - test -n "$TASK_VERSION" -a "$TASK_VERSION" != "0.0.0"
+
+            - pushd $res_hello_world_task_publish_gitrepo_resourcePath
+            # Configure JFrog CLI
+            - jfrog npmc --repo-resolve $RESOLVE_REPO
+            # Install npm dependencies
+            - jfrog npm install
+            # Build task runnable script bundled with dependencies
+            - npm run dist
+            - popd
+
+            # Create task package content
+            - mkdir $JFROG_STEP_WORKSPACE_DIR/$TASK_NAME
+            # Copy task.yml
+            - cp $res_hello_world_task_publish_gitrepo_resourcePath/task.yml $JFROG_STEP_WORKSPACE_DIR/$TASK_NAME
+            # Copy README.md
+            - cp $res_hello_world_task_publish_gitrepo_resourcePath/README.md $JFROG_STEP_WORKSPACE_DIR/$TASK_NAME
+            # Copy dist folder
+            - cp -r $res_hello_world_task_publish_gitrepo_resourcePath/dist $JFROG_STEP_WORKSPACE_DIR/$TASK_NAME
+            - echo "Task content" && ls -la $JFROG_STEP_WORKSPACE_DIR/$TASK_NAME
+
+            # Run publish task
+            - task: jfrog/publish-task@v0.0.1
+              id: publish-hello-world
+              input:
+                path: $JFROG_STEP_WORKSPACE_DIR/$TASK_NAME
+                rtRepository: $TASK_REPOSITORY
+                taskName: $TASK_NAME
+                version: $TASK_VERSION
+
+      - name: test_published_task
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: build_and_publish_task
+          integrations:
+            - name: {{ .Values.artIntegration }}
+        execution:
+          onExecute:
+            # Run task
+            - task: $TASK_NAME@v$TASK_VERSION
+              id: hello_world_test
+              input:
+                name: "developer"
+
+            # Check task output
+            - echo "task output is $OUT_hello_world_test_greeting"
+            # Check exported environment variable
+            - echo "path to greeting file is $GREETING_FILE"
+            # Check task generated file
+            - cat ./greeting.txt
+          onComplete:
+            - echo "Step done!"

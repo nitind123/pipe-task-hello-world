@@ -1,0 +1,26 @@
+{
+  "name": "jfrog-pipelines-task-hello-world",
+  "version": "1.0.0",
+  "description": "My First Pipelines Task",
+  "main": "src/index.js",
+  "scripts": {
+    "dist": "ncc build src/index.js -o dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elioengcomp/jfrog-pipelines-task-hello-world.git"
+  },
+  "author": "elioengcomp",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elioengcomp/jfrog-pipelines-task-hello-world/issues"
+  },
+  "homepage": "https://github.com/elioengcomp/jfrog-pipelines-task-hello-world#readme",
+  "dependencies": {
+    "jfrog-pipelines-tasks": "^0.0.2"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.34.0"
+  }
+}

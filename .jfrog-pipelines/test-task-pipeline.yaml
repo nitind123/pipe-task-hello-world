@@ -1,0 +1,60 @@
+template: true
+valuesFilePath: ./values.yml
+
+resources:
+  - name: hello_world_task_gitrepo
+    type: GitRepo
+    configuration:
+      path: {{ .Values.repoPath }}
+      gitProvider: {{ .Values.gitIntegration }}
+      branches:
+        include: ^{{ .Values.mainBranch }}$
+      cloneProtocol: https
+
+pipelines:
+  - name: hello_world_task_test
+    configuration:
+      jfrogCliVersion: 2
+      runtime:
+        type: image
+        image:
+          auto:
+            language: node
+            versions:
+              - "16"
+      environmentVariables:
+        readOnly:
+          RESOLVE_REPO: npm-virtual
+    steps:
+      - name: test_task
+        type: Bash
+        configuration:
+          inputResources:
+            - name: hello_world_task_gitrepo
+          integrations:
+            - name: {{ .Values.artIntegration }}
+        execution:
+          onExecute:
+            - pushd $res_hello_world_task_gitrepo_resourcePath
+            # Configure JFrog CLI
+            - jfrog npmc --repo-resolve $RESOLVE_REPO
+            # Install npm dependencies
+            - jfrog npm install
+            # Build task runnable script bundled with dependencies
+            - npm run dist
+            - popd
+
+            # Run task
+            - task: $res_hello_world_task_gitrepo_resourcePath
+              id: hello_world_test
+              input:
+                name: "developer"
+
+            # Check task output
+            - echo "task output is $OUT_hello_world_test_greeting"
+            # Check exported environment variable
+            - echo "path to greeting file is $GREETING_FILE"
+            # Check task generated file
+            - cat ./greeting.txt
+          onComplete:
+            - echo "Step done!"
