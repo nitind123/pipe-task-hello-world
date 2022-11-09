@@ -8,10 +8,10 @@ labels:
   - sdk
 input:
   - name: name
-    description: Name to be greeted
+    description: Name to be greeted.
 output:
   - name: greeting
-    description: Greeting message produced by the task
+    description: Greeting message produced by the task.
 execution:
   - node16 dist/index.js main
 hooks:
