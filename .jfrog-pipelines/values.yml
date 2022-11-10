@@ -1,4 +1,4 @@
-repoPath: PIP/pipe-task-hello-world
+repoPath: elioengcomp/jfrog-pipelines-task-hello-world
 mainBranch: main
 gitIntegration: int_github
 artIntegration: int_artifactory
