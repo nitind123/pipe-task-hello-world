@@ -31,11 +31,11 @@ Before using the contents of this repo, make sure you have the following configu
   - Git project integration according to the Git provider you are using.
 - Artifactory Repositories:
   - **pipelines-tasks-local**: local generic repo. This repo will be the target for your published task.
-  - **pipelines-tasks-remote**: remote generic repo pointing to https://entplus.jfrog.io/artifactory/pipe-dev-tasks-local. **Don't forget to add your credentials**
+  - **pipelines-tasks-remote**: remote generic repo pointing to https://entplus.jfrog.io/artifactory/pipe-dev-tasks-local. **Don't forget to add your credentials.**
   This repo will be used to resolve common tasks maintained by JFrog, like the `publish-task` task used here to publish a task to Artifactory.
   - **pipelines-tasks-virtual**: virtual generic repo composed by _pipelines-tasks-local_ and _pipelines-tasks-remote_.
 This is the repo used by default by Pipelines to resolve tasks.
-  - **npm-remote**: remote npm repo pointing to https://entplus.jfrog.io/artifactory/api/npm/npm-virtual. **Don't forget to add your credentials**
+  - **npm-remote**: remote npm repo pointing to https://entplus.jfrog.io/artifactory/api/npm/npm-virtual. **Don't forget to add your credentials.**
   - **npm-virtual**: virtual npm repo composed by _npm-remote_.
 
 Also make sure to do the following steps:
