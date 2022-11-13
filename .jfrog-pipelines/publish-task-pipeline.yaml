@@ -93,3 +93,59 @@ pipelines:
             - cat ./greeting.txt
           onComplete:
             - echo "Step done!"
+  - name: install_nodejs_task_publish
+    configuration:
+      jfrogCliVersion: 2
+      runtime:
+        type: image
+        image:
+          custom:
+            name: releases-docker.jfrog.io/jfrog/pipelines-u18node
+            tag: "16"
+            autoPull: true
+      environmentVariables:
+        readOnly:
+          TASK_NAME: install-nodejs
+          TASK_VERSION: 0.0.${run_number}
+          TASK_REPOSITORY: pipelines-tasks-local
+          RESOLVE_REPO: npm-virtual
+    steps:
+      - name: build_and_publish_task
+        type: Bash
+        configuration:
+          inputResources:
+            - name: hello_world_task_publish_gitrepo
+              trigger: false
+          integrations:
+            - name: {{ .Values.artIntegration }}
+        execution:
+          onExecute:
+            # Create task package content
+            - mkdir $JFROG_STEP_WORKSPACE_DIR/$TASK_NAME
+            # Copy task.yml
+            - cp $res_hello_world_task_publish_gitrepo_resourcePath/task.yml $JFROG_STEP_WORKSPACE_DIR/$TASK_NAME
+            - echo "Task content" && ls -la $JFROG_STEP_WORKSPACE_DIR/$TASK_NAME
+            # Run publish task
+            - task: jfrog/publish-task@v0.0.1
+              id: publish-hello-world
+              input:
+                path: $JFROG_STEP_WORKSPACE_DIR/$TASK_NAME
+                rtRepository: $TASK_REPOSITORY
+                taskName: $TASK_NAME
+                version: $TASK_VERSION
+
+      - name: test_published_task
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: build_and_publish_task
+          integrations:
+            - name: {{ .Values.artIntegration }}
+        execution:
+          onExecute:
+            # Run task
+            - task: $TASK_NAME@v$TASK_VERSION
+              id: hello_world_test
+              input:
+                version: "19"
+            - node -v
