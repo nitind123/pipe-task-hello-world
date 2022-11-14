@@ -51,24 +51,15 @@ pipelines:
             - npm run dist
             - popd
 
-            # Create task package content
-            - mkdir $JFROG_STEP_WORKSPACE_DIR/$TASK_NAME
-            # Copy task.yml
-            - cp $res_hello_world_task_publish_gitrepo_resourcePath/task.yml $JFROG_STEP_WORKSPACE_DIR/$TASK_NAME
-            # Copy README.md
-            - cp $res_hello_world_task_publish_gitrepo_resourcePath/README.md $JFROG_STEP_WORKSPACE_DIR/$TASK_NAME
-            # Copy dist folder
-            - cp -r $res_hello_world_task_publish_gitrepo_resourcePath/dist $JFROG_STEP_WORKSPACE_DIR/$TASK_NAME
-            - echo "Task content" && ls -la $JFROG_STEP_WORKSPACE_DIR/$TASK_NAME
-
             # Run publish task
-            - task: jfrog/publish-task@v0.0.1
+            - task: jfrog/publish-task@v0.0.2
               id: publish-hello-world
               input:
-                path: $JFROG_STEP_WORKSPACE_DIR/$TASK_NAME
-                rtRepository: $TASK_REPOSITORY
+                path: $res_hello_world_task_publish_gitrepo_resourcePath
+                targetRepository: $TASK_REPOSITORY
                 taskName: $TASK_NAME
-                version: $TASK_VERSION
+                taskVersion: $TASK_VERSION
+                includePattern: ^README.md$|^dist
 
       - name: test_published_task
         type: Bash
