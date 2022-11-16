@@ -24,19 +24,29 @@ Pipelines definitions are also available to help developers with the following a
 
 ### Environment Setup
 
-Before using the contents of this repo, make sure you have the following configurations done in your environment
+Before using the contents of this repo, make sure you have the following configurations done in your environment.
 
 - Pipelines Project Integrations:
   - Artifactory project integration pointing to your Artifactory instance.
   - Git project integration according to the Git provider you are using.
 - Artifactory Repositories:
-  - **pipelines-tasks-local**: local generic repo. This repo will be the target for your published task.
-  - **pipelines-tasks-remote**: remote generic repo pointing to https://entplus.jfrog.io/artifactory/pipe-dev-tasks-local. **Don't forget to add your credentials.**
-  This repo will be used to resolve common tasks maintained by JFrog, like the `publish-task` task used here to publish a task to Artifactory.
-  - **pipelines-tasks-virtual**: virtual generic repo composed by _pipelines-tasks-local_ and _pipelines-tasks-remote_.
-This is the repo used by default by Pipelines to resolve tasks.
-  - **npm-remote**: remote npm repo pointing to https://entplus.jfrog.io/artifactory/api/npm/npm-virtual. **Don't forget to add your credentials.**
-  - **npm-virtual**: virtual npm repo composed by _npm-remote_.
+  - Auto Setup
+    - Export the following environment variables:
+      - ```
+        ENTPLUS_PASSWORD
+        ENTPLUS_USER
+        JPD_URL
+        JPD_PASSWORD # (defaults to 'password')
+        JPD_USER # (defaults to 'admin')"
+      - Run [boostrapHelloWorldRepos.sh](./bootstrapRepos/bootstrapHelloWorldRepos.sh)
+  - Manual Setup
+    - **pipelines-tasks-local**: local generic repo. This repo will be the target for your published task.
+    - **pipelines-tasks-remote**: remote generic repo pointing to https://entplus.jfrog.io/artifactory/pipe-dev-tasks-local. **Don't forget to add your credentials.**
+    This repo will be used to resolve common tasks maintained by JFrog, like the `publish-task` task used here to publish a task to Artifactory.
+    - **pipelines-tasks-virtual**: virtual generic repo composed by _pipelines-tasks-local_ and _pipelines-tasks-remote_.
+  This is the repo used by default by Pipelines to resolve tasks.
+    - **npm-remote**: remote npm repo pointing to https://entplus.jfrog.io/artifactory/api/npm/npm-virtual. **Don't forget to add your credentials.**
+    - **npm-virtual**: virtual npm repo composed by _npm-remote_.
 
 ### Pipelines Tasks in Action!
 
