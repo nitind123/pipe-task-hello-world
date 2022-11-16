@@ -16,17 +16,17 @@ if [ -z "$JPD_URL" ]; then
 fi
 
 if [ -z "$JPD_USER" ]; then
-  echo "must set $JPD_USER"
+  echo "must set JPD_USER"
   exit 1
 fi
 
 if [ -z "$ENTPLUS_PASSWORD" ]; then
-  echo "must set $ENTPLUS_PASSWORD"
+  echo "must set ENTPLUS_PASSWORD"
   exit 1
 fi
 
 if [ -z "$ENTPLUS_USER" ]; then
-  echo "must set $ENTPLUS_USER"
+  echo "must set ENTPLUS_USER"
   exit 1
 fi
 
