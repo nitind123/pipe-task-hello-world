@@ -18,9 +18,9 @@
   },
   "homepage": "https://github.com/elioengcomp/jfrog-pipelines-task-hello-world#readme",
   "dependencies": {
-    "jfrog-pipelines-tasks": "^0.0.2"
+    "jfrog-pipelines-tasks": "0.0.5"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.34.0"
+    "@vercel/ncc": "0.34.0"
   }
 }

@@ -38,16 +38,6 @@ This is the repo used by default by Pipelines to resolve tasks.
   - **npm-remote**: remote npm repo pointing to https://entplus.jfrog.io/artifactory/api/npm/npm-virtual. **Don't forget to add your credentials.**
   - **npm-virtual**: virtual npm repo composed by _npm-remote_.
 
-Also make sure to do the following steps:
-
-- **TEMPORARY_FIX** (Will be removed as soon as task download is fixed in `pipe` tool): Send a _HEAD_ request to cache `publish-task` task in your Artifactory. Using `curl` you can do that by running:
-```shell
-ART_URL=YOUR_ARTIFACTORY_URL
-USER=YOUR_USER
-PASSWORD=YOUR_PASSWORD
-curl -u $USER:$PASSWORD -I $ART_URL/artifactory/pipelines-tasks-virtual/jfrog/publish-task/v0.0.1.zip
-```
-
 ### Pipelines Tasks in Action!
 
 To see this Pipelines Task in action, do the following:
