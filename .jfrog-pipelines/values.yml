@@ -1,5 +1,5 @@
-repoPath: ~KUNALM/pipe-task-hello-world
-mainBranch: main
-gitIntegration: mybitbucket
-artIntegration: default_s_artifactory
+repoPath: kunal-mazumdar/pipe-task-hello-world
+mainBranch: master
+gitIntegration: mygithub
+artIntegration: int_default_artifactory
 windowsNodePool:
