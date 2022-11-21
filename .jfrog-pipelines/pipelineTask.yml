@@ -59,3 +59,52 @@ pipelines:
           onComplete:
             - echo "Step done!"
 
+{{ if .Values.windowsNodePool }}
+  - name: hello_world_task_win_test
+    configuration:
+      jfrogCliVersion: 2
+      nodePool: {{ .Values.windowsNodePool }}
+      runtime:
+        type: image
+        image:
+          custom:
+            name: releases-docker.jfrog.io/jfrog/pipelines-w19node
+            tag: "16"
+            autoPull: true
+      environmentVariables:
+        readOnly:
+          RESOLVE_REPO: npm-virtual
+    steps:
+      - name: win_test_task
+        type: PowerShell
+        configuration:
+          inputResources:
+            - name: hello_world_task_gitrepo
+          integrations:
+            - name: {{ .Values.artIntegration }}
+        execution:
+          onExecute:
+            - pushd $res_hello_world_task_gitrepo_resourcePath
+            # Configure JFrog CLI
+            - jfrog npmc --repo-resolve $RESOLVE_REPO
+            # Install npm dependencies
+            - jfrog npm install
+            # Build task runnable script bundled with dependencies
+            - npm run dist
+            - popd
+
+            # Run task
+            - task: $res_hello_world_task_gitrepo_resourcePath
+              id: hello_world_test
+              input:
+                name: "developer"
+
+            # Check task output
+            - echo "task output is ${OUT_hello_world_test_greeting}"
+            # Check exported environment variable
+            - echo "path to greeting file is ${GREETING_FILE}"
+            # Check task generated file
+            - Get-Content ./greeting.txt
+          onComplete:
+            - echo "Step done!"
+{{ end }}
