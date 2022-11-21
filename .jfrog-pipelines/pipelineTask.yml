@@ -58,4 +58,3 @@ pipelines:
             - cat ./greeting.txt
           onComplete:
             - echo "Step done!"
-
