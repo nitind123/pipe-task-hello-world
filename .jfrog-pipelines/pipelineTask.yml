@@ -10,7 +10,6 @@ resources:
       branches:
         include: ^{{ .Values.mainBranch }}$
       cloneProtocol: https
-
 pipelines:
   - name: hello_world_task_test
     configuration:
